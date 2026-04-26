@@ -31,13 +31,13 @@ VitalityHub is a high-performance for fitness and health monitoring. Built with 
 ## 🚀 Quick Start
 
 \`\`\`bash
-git clone https://github.com/yourusername/vitalityhub.git
+git clone https://github.com/jatin-codes-sketch/fitness_tracking_system
 cd vitalityhub
 cp .env     # add your SECRET_KEY and MONGO_URI
 docker compose up --build
 \`\`\`
 
-Open **https://whoops-latticed-judgingly.ngrok-free.dev/** for testing 
+Open **http://localhost:5173**  
 
 ## 📁 Structure
 
