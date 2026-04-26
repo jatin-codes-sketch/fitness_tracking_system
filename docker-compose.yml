@@ -1,0 +1,54 @@
+services:
+
+  mongodb:
+    image: mongo:7.0
+    container_name: vh_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: vitalityhub
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  api:
+    build:
+      context: ./backend
+    container_name: vh_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+  
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: node server.js
+
+  frontend:
+    image: node:22-alpine
+    container_name: vh_frontend
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run build && node node_modules/vite/bin/vite.js preview --host 0.0.0.0 --port 5173 --strictPort"
+    depends_on:
+      - api
+
+volumes:
+  mongo_data:
