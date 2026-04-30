@@ -3,6 +3,7 @@
  * POST /v1/fitness/workout   — log a workout session
  * GET  /v1/fitness/history   — retrieve workout history
  */
+
 import { Router } from "express";
 import { body, query } from "express-validator";
 import WorkoutSession from "../models/WorkoutSession.js";
@@ -12,7 +13,7 @@ import { validate } from "../middleware/validate.js";
 const router = Router();
 router.use(authenticate);
 
-// ── Validators ─────────────────────────────────────────────────────────────
+//validators
 const workoutValidators = [
   body("workout_name").trim().notEmpty().withMessage("Workout name is required."),
   body("exercise_list").isArray().withMessage("exercise_list must be an array."),
@@ -25,44 +26,57 @@ const workoutValidators = [
   body("duration_minutes").optional().isInt({ min: 1 }).withMessage("Duration must be >= 1 min."),
 ];
 
-// ── POST /v1/fitness/workout ───────────────────────────────────────────────
+// /v1/fitness/workout 
 router.post("/workout", workoutValidators, validate, async (req, res, next) => {
   try {
     const { workout_name, exercise_list, calories_burned, duration_minutes, notes } = req.body;
 
-    const session = await WorkoutSession.create({
-      user_id:          req.user_id,
+    
+    const doc = {
+      user_id: req.user_id,
       workout_name,
-      exercise_list:    exercise_list || [],
-      calories_burned:  calories_burned  ?? null,
+      exercise_list: exercise_list || [],
+      calories_burned: calories_burned ?? null,
       duration_minutes: duration_minutes ?? null,
-      notes:            notes            ?? null,
-    });
+      notes: notes ?? null,
+      timestamp: new Date(), 
+    };
 
-    // Return with computed virtuals
-    res.status(201).json(session.toJSON());
+   
+    const result = await WorkoutSession.collection.insertOne(doc);
+
+    
+    const insertedDoc = await WorkoutSession.findById(result.insertedId);
+
+    res.status(201).json(insertedDoc.toJSON());
   } catch (err) {
     next(err);
   }
 });
 
-// ── GET /v1/fitness/history ────────────────────────────────────────────────
+
 router.get(
   "/history",
   [query("days").optional().isInt({ min: 1, max: 365 }).toInt()],
   validate,
   async (req, res, next) => {
     try {
-      const days  = req.query.days || 30;
+      const days = req.query.days || 30;
       const since = new Date(Date.now() - days * 86_400_000);
 
-      const sessions = await WorkoutSession.find({
-        user_id:   req.user_id,
+      
+      const cursor = WorkoutSession.collection.find({
+        user_id: req.user_id,
         timestamp: { $gte: since },
-      })
-        .sort({ timestamp: -1 });
+      });
 
-      // toJSON triggers virtuals
+      const docs = await cursor
+        .sort({ timestamp: -1 })
+        .toArray();
+
+      
+      const sessions = docs.map((doc) => new WorkoutSession(doc));
+
       res.json(sessions.map((s) => s.toJSON()));
     } catch (err) {
       next(err);

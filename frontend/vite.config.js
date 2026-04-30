@@ -18,6 +18,10 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 5173,
     allowedHosts: "all",
+    headers: {
+      // Bypass ngrok's browser interstitial page so assets load correctly
+      "ngrok-skip-browser-warning": "true",
+    },
     proxy: {
       "/v1": {
         target: "http://api:8000",

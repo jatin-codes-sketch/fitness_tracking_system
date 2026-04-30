@@ -1,12 +1,6 @@
-/**
- * VitalityHub — DietLog Model
- * Collection: diet_logs
- * One document per user per calendar date.
- * Macro totals computed via virtuals.
- */
 import mongoose from "mongoose";
 
-// ── Sub-schemas ───────────────────────────────────────────────────────────
+
 const MealSchema = new mongoose.Schema(
   {
     meal_type:  {
@@ -24,11 +18,11 @@ const MealSchema = new mongoose.Schema(
   { _id: false }
 );
 
-// ── Main schema ───────────────────────────────────────────────────────────
+
 const DietLogSchema = new mongoose.Schema(
   {
     user_id:       { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    date:          { type: String, required: true },  // "YYYY-MM-DD"
+    date:          { type: String, required: true },  
     meal_list:     { type: [MealSchema], default: [] },
     total_water_ml:{ type: Number, default: 0, min: 0 },
   },
@@ -39,11 +33,11 @@ const DietLogSchema = new mongoose.Schema(
   }
 );
 
-// ── Compound unique index: one log per user per date ──────────────────────
+
 DietLogSchema.index({ user_id: 1, date: -1 });
 DietLogSchema.index({ user_id: 1, date: 1 }, { unique: true });
 
-// ── Virtuals ──────────────────────────────────────────────────────────────
+
 DietLogSchema.virtual("total_calories").get(function () {
   return parseFloat(
     this.meal_list.reduce((a, m) => a + m.calories, 0).toFixed(1)
