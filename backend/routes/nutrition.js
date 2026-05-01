@@ -57,7 +57,8 @@ router.post("/meal", mealValidators, validate, async (req, res, next) => {
       { upsert: true }
     );
 
-    const updatedDoc = await DietLog.findOne({ user_id: req.user_id, date: today });
+    const log = await DietLog.collection.findOne({ user_id: req.user_id, date: today });
+    const updatedDoc = new DietLog(log);
 
     res.status(201).json({
       message: "Meal logged.",
@@ -86,7 +87,8 @@ router.post("/water", waterValidators, validate, async (req, res, next) => {
       { upsert: true }
     );
 
-    const updatedDoc = await DietLog.findOne({ user_id: req.user_id, date: today });
+    const log = await DietLog.collection.findOne({ user_id: req.user_id, date: today });
+    const updatedDoc = new DietLog(log);
 
     res.json({
       message: `+${amount_ml}ml added.`,

@@ -26,6 +26,7 @@ const workoutValidators = [
   body("duration_minutes").optional().isInt({ min: 1 }).withMessage("Duration must be >= 1 min."),
 ];
 
+
 // /v1/fitness/workout 
 router.post("/workout", workoutValidators, validate, async (req, res, next) => {
   try {

@@ -1,26 +1,3 @@
-/**
- * VitalityHub — Single Source of Truth
- * ─────────────────────────────────────
- * All static data, config, and lookup tables live here.
- * Import from "@/constants" anywhere in the app.
- *
- * Sections:
- *  1.  App Config
- *  2.  Theme & Colors
- *  3.  Navigation
- *  4.  Exercise Database (75+ exercises, 4 types)
- *  5.  Calorie Calculator Logic
- *  6.  Meal & Nutrition Config
- *  7.  User Biometric Config
- *  8.  Vitals Reference Ranges
- *  9.  Hydration Config
- *  10. Greeting Util
- */
-
-
-// ══════════════════════════════════════════════════════════════
-// 1. APP CONFIG
-// ══════════════════════════════════════════════════════════════
 export const APP = {
   name:           "VitalityHub",
   version:        "1.0.0",
@@ -33,15 +10,12 @@ export const APP = {
 };
 
 
-// ══════════════════════════════════════════════════════════════
-// 2. THEME & COLORS
-// ══════════════════════════════════════════════════════════════
 export const COLORS = {
-  accent:  "#22d3ee",  // cyan   — primary / water
-  violet:  "#a78bfa",  // violet — secondary / BP
-  emerald: "#34d399",  // green  — success / SpO2
-  amber:   "#fb923c",  // orange — calories / warnings
-  danger:  "#f87171",  // red    — heart rate / alerts
+  accent:  "#22d3ee",  
+  violet:  "#a78bfa", 
+  emerald: "#34d399",
+  amber:   "#fb923c",  
+  danger:  "#f87171",  
   muted:   "#64748b",
 };
 
@@ -63,9 +37,7 @@ export const MACRO_COLORS = {
 };
 
 
-// ══════════════════════════════════════════════════════════════
-// 3. NAVIGATION & HISTORY FILTERS
-// ══════════════════════════════════════════════════════════════
+
 export const NAV_ROUTES = [
   { path:"/",          label:"Dashboard" },
   { path:"/log",       label:"Log"       },
@@ -82,17 +54,7 @@ export const HISTORY_DAY_OPTIONS = [
 ];
 
 
-// ══════════════════════════════════════════════════════════════
-// 4. EXERCISE DATABASE
-// ══════════════════════════════════════════════════════════════
-/**
- * Exercise types:
- *  "weighted"   → sets × reps × weight(kg)     — MET-based calorie estimate
- *  "bodyweight" → sets × reps (no weight)       — calsPerRep estimate
- *  "cardio"     → distance(km) + duration(min)  — MET-based estimate
- *  "timed"      → duration(sec)                 — calsPerMin estimate
- *   null        → Custom free-text entry
- */
+
 export const EXERCISE_TYPES = {
   weighted:   { label:"🏋️ Weighted",  color:"#a78bfa", description:"Sets × reps × kg"        },
   bodyweight: { label:"💪 Bodyweight", color:"#34d399", description:"Sets × reps, no weight"  },
